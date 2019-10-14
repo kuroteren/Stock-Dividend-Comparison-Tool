@@ -76,10 +76,10 @@ public:
 	bool equal(stock Other);
 
 	//Compares two stocks, returns better value option
-	stock compare_Stocks(stock Other);
+	stock compare(stock Other);
 
 	//Compares two stocks, returns better value option
 	//Given a cash value for purchasing
-	stock compare_Stocks(stock Other, double cash);
+	stock compare(stock Other, double cash);
 };
 

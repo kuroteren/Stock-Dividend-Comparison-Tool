@@ -200,26 +200,14 @@ void stock::calculate_Annual()
 
 void stock::calculate_Distribution()
 {
-	if (divAnnualPay == 0)
-	{
-		divPayPerDist = (price * (divYield / 100)) / payFreq;
-	}
-	else
-	{
-		divPayPerDist = divAnnualPay / payFreq;
-	}
+	//Use yield if annual pay is set to 0, otherwise use annual pay
+	(divAnnualPay == 0) ? divPayPerDist = (price * (divYield / 100)) / payFreq : divPayPerDist = divAnnualPay / payFreq;
 }
 
 void stock::calculate_Yield()
 {
-	if (divAnnualPay != 0)
-	{
-		divYield = (divAnnualPay / price) * 100;
-	}
-	else
-	{
-		divYield = ((divPayPerDist * payFreq) / price) * 100;
-	}
+	//If Annual Pay is not 0 use to calculate yield %, if it is use Distribution pay
+	(divAnnualPay != 0) ? divYield = (divAnnualPay / price) * 100 : divYield = ((divPayPerDist * payFreq) / price) * 100;
 }
 
 bool stock::equal(stock Other)
@@ -229,23 +217,34 @@ bool stock::equal(stock Other)
 
 	bool name = (fullName._Equal(Other.get_Name()));
 	bool tick = ticker._Equal(Other.get_Tick());
+
+	return (name && tick) ? true : false;
+}
+
+stock stock::compare(stock Other)
+{
+	if (this->divAnnualPay >= Other.get_Annual() && this->price <= Other.get_Price())
+	{
+		return *this;
+	}
+	if (this->divYield >= Other.get_Yield() && this->price <= Other.get_Price())
+	{
+		return *this;
+	}
 	
-	if (name && tick)
-	{
-		return true;
-	}
-	else
-	{
-		return false;
-	}
+	return Other;
 }
 
-stock stock::compare_Stocks(stock Other)
+stock stock::compare(stock Other, double cash)
 {
-	return stock();
-}
+	int s1, s2;
+	double p1, p2;
 
-stock stock::compare_Stocks(stock Other, double cash)
-{
-	return stock();
+	s1 = cash / this->price;
+	s2 = cash / Other.get_Price;
+
+	p1 = s1 * this->divAnnualPay;
+	p2 = s2 * Other.get_Annual();
+
+	return (p1 > p2) ? *this : Other;
 }
